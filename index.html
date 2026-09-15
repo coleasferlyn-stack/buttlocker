@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ButtLocker ($BUTT): your cheeks, encrypted</title>
+<meta name="description" content="ButtLocker ($BUTT) is a memecoin on Base, launched on Stonks Exchange and paired with tokenized MSFT.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Martian+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EEF2FA; --panel:#FFFFFF; --ink:#0D1B3A; --muted:#4E5D7E; --line:#CFD8EA;
+  --blue:#1146B8; --blue-deep:#0B3290; --on-blue:#F3F6FF; --on-blue-muted:#BFCDF2;
+  --peach:#FF9A73; --peach-ink:#3A1406; --peach-soft:#FFE3D6;
+  --amber:#F2C14E; --teal:#2A9D94; --slate:#8A97B3;
+  --hatch:rgba(17,70,184,.09); --focus:#FFB08F;
+  --display:"Bricolage Grotesque","Avenir Next","Helvetica Neue",Arial,system-ui,sans-serif;
+  --mono:"Martian Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#081026; --panel:#0F1938; --ink:#E3E9F7; --muted:#9BA8C6; --line:#223160;
+    --blue:#0E3A9E; --blue-deep:#07256B; --peach-soft:#3B2219; --slate:#5E6B8A;
+    --hatch:rgba(255,255,255,.06);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#081026; --panel:#0F1938; --ink:#E3E9F7; --muted:#9BA8C6; --line:#223160;
+  --blue:#0E3A9E; --blue-deep:#07256B; --peach-soft:#3B2219; --slate:#5E6B8A;
+  --hatch:rgba(255,255,255,.06);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+section[id]{scroll-margin-top:64px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--display);font-size:1.0625rem;line-height:1.55;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(1rem,4vw,2rem)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:20;background:var(--blue-deep);color:var(--on-blue)}
+.topbar .wrap{display:flex;align-items:center;gap:1.5rem;min-height:64px}
+.brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;font-weight:800;font-size:1.25rem;font-variation-settings:"wdth" 85;margin-right:auto}
+.brand svg{width:34px;height:34px}
+.brand small{font-family:var(--mono);font-size:.72rem;font-weight:400;color:var(--on-blue-muted);margin-left:.15rem}
+.nav{display:flex;gap:1.4rem}
+.nav a{text-decoration:none;color:var(--on-blue-muted);font-weight:600}
+.nav a:hover{color:var(--on-blue)}
+@media (max-width:760px){.nav{display:none}}
+
+.btn{font:inherit;font-weight:700;font-size:1rem;line-height:1;padding:.85rem 1.3rem;border-radius:6px;border:2px solid transparent;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.5rem}
+.btn-peach{background:var(--peach);color:var(--peach-ink)}
+.btn-peach:hover{background:#FFB08F}
+.btn-line{background:transparent;color:var(--on-blue);border-color:rgba(243,246,255,.45)}
+.btn-line:hover{border-color:var(--on-blue)}
+.btn-small{padding:.6rem 1rem;font-size:.95rem}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ---------- hero: the recovery screen ---------- */
+.hero{background:var(--blue);color:var(--on-blue);padding:clamp(3rem,8vw,6rem) 0 clamp(3rem,7vw,5rem)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:clamp(2rem,6vw,5rem);align-items:start}
+@media (max-width:880px){.hero-grid{grid-template-columns:1fr}}
+.hero-kicker{font-size:1.15rem;font-weight:600;color:var(--on-blue-muted);margin:0 0 .8rem}
+.hero h1{font-size:clamp(2.5rem,6.4vw,4.75rem);line-height:1;font-weight:800;font-variation-settings:"wdth" 78;letter-spacing:-.01em;margin:0 0 1.25rem;max-width:13ch}
+.lede{font-size:clamp(1.1rem,2vw,1.3rem);max-width:44ch;margin:0}
+
+.keyfield{border:0;padding:0;margin:2.25rem 0 0;min-width:0}
+.keyfield legend{font-size:1rem;color:var(--on-blue-muted);margin-bottom:.7rem;padding:0}
+.keygrid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:.4rem}
+.keygrid input{width:100%;min-width:0;font-family:var(--mono);font-size:.72rem;letter-spacing:-.02em;padding:.75rem .1rem;text-align:center;border:2px solid transparent;border-radius:4px;background:#fff;color:#0D1B3A}
+.keygrid input::placeholder{color:#AEB9D3}
+@media (max-width:640px){.keygrid{grid-template-columns:repeat(4,minmax(0,1fr))}.keygrid input{font-size:.8rem}}
+.keygrid input:focus-visible{outline:3px solid var(--focus);outline-offset:1px}
+.actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.1rem}
+.result{min-height:1.6em;margin:1.1rem 0 0;font-weight:600;font-size:1.1rem}
+.esc{margin:2.25rem 0 0;color:var(--on-blue-muted);font-size:.98rem}
+
+.lockwrap{width:min(250px,62%);margin:0 auto 2rem}
+.lockwrap svg{display:block;width:100%;height:auto}
+@keyframes shake{0%,100%{transform:translateX(0) rotate(0)}18%{transform:translateX(-9px) rotate(-5deg)}38%{transform:translateX(8px) rotate(4deg)}58%{transform:translateX(-5px) rotate(-2deg)}78%{transform:translateX(3px) rotate(1deg)}}
+.shake{animation:shake .5s ease}
+@media (prefers-reduced-motion: reduce){.shake{animation:none}}
+.keyhelp{border-left:3px solid var(--peach);padding:.1rem 0 .1rem 1.2rem}
+.keyhelp h2{font-size:1.3rem;font-weight:700;margin:0 0 .5rem}
+.keyhelp ul{margin:0;padding-left:1.1rem}
+.keyhelp li{margin:.3rem 0}
+.keyid{margin:1.2rem 0 0;font-size:.95rem;color:var(--on-blue-muted)}
+.keyid code{font-family:var(--mono);font-size:.85rem;color:var(--on-blue);word-break:break-all}
+
+/* ---------- sections ---------- */
+.section{padding:clamp(3.5rem,8vw,6rem) 0}
+.section + .section{border-top:1px solid var(--line)}
+.section h2{font-size:clamp(2rem,4.4vw,3rem);font-weight:800;font-variation-settings:"wdth" 82;line-height:1.05;margin:0 0 .8rem;max-width:20ch}
+.intro{color:var(--muted);max-width:58ch;margin:0 0 2.25rem;font-size:1.12rem}
+
+/* policy table */
+.scroller{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.policy{width:100%;min-width:680px;border-collapse:collapse}
+.policy th,.policy td{text-align:left;padding:1rem 1.1rem;border-bottom:1px solid var(--line);vertical-align:top}
+.policy tr:last-child td{border-bottom:0}
+.policy thead th{font-size:.92rem;font-weight:600;color:var(--muted);background:var(--paper)}
+.policy td:first-child{font-weight:600;width:36%}
+.policy td:last-child{color:var(--muted)}
+.state{display:inline-flex;align-items:center;gap:.5rem;white-space:nowrap;font-weight:700}
+.state::before{content:"";width:.6rem;height:.6rem;border-radius:50%;background:var(--slate)}
+.state.on::before{background:var(--teal)}
+.state.req::before{background:var(--peach)}
+.state.lock::before{background:var(--blue);border-radius:2px}
+.state.code{font-family:var(--mono);font-size:.85rem}
+
+/* disk map */
+.disk{display:grid;grid-template-columns:170px minmax(0,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.disk-label{padding:1rem;border-right:1px solid var(--line);font-size:.95rem;line-height:1.45;background:var(--paper)}
+.disk-label strong{display:block;font-size:1.1rem}
+.parts{display:flex;min-height:132px}
+.part{flex:0 0 var(--w);min-width:0;border-right:1px solid var(--line);display:flex;flex-direction:column}
+.part:last-child{border-right:0}
+.part .band{height:16px;background:var(--c)}
+.part .body{flex:1;padding:.7rem .65rem;overflow:hidden}
+.part.enc .body{background:repeating-linear-gradient(135deg,transparent 0 9px,var(--hatch) 9px 18px)}
+.part b{display:block;font-size:1.05rem}
+.part span{display:block;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.part em{display:block;font-style:normal;font-size:.85rem;color:var(--muted);margin-top:.35rem}
+@media (max-width:760px){
+  .disk{grid-template-columns:1fr}
+  .disk-label{border-right:0;border-bottom:1px solid var(--line)}
+  .part em{display:none}
+  .part.tiny span{display:none}
+}
+.legend{list-style:none;margin:2rem 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:1.25rem 2.5rem}
+.legend li{display:grid;grid-template-columns:14px 1fr;gap:.2rem .8rem;align-items:start}
+.legend i{width:14px;height:14px;margin-top:.35rem;background:var(--c);border-radius:3px}
+.legend .amt{grid-column:2;font-family:var(--mono);font-size:.82rem;color:var(--muted)}
+.legend .note{grid-column:2;color:var(--muted);font-size:.98rem}
+
+.disk + .legend + .disk{margin-top:3rem}
+.disk-head{font-size:1.35rem;font-weight:700;margin:3rem 0 1rem}
+.disk-head:first-of-type{margin-top:0}
+.pair{margin:1rem 0 0;color:var(--on-blue-muted);font-weight:600;max-width:46ch}
+.contract .links{display:flex;flex-wrap:wrap;gap:.6rem}
+.btn-outline{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn-outline:hover{border-color:var(--ink)}
+.btn-outline[aria-disabled="true"]{opacity:.5;pointer-events:none}
+/* live price */
+.price{background:var(--blue);color:var(--on-blue);border-radius:8px;padding:1.5rem;display:flex;flex-direction:column}
+.price-head{display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.price h3{margin:0;font-size:1.2rem;font-weight:600;color:var(--on-blue-muted)}
+.chg{font-weight:700;font-size:.95rem;padding:.25rem .6rem;border-radius:4px;background:var(--teal);color:#fff;font-variant-numeric:tabular-nums}
+.chg.down{background:#D9483F}
+.chg[hidden]{display:none}
+.price-big{font-size:clamp(2.4rem,5vw,3.4rem);font-weight:800;font-variation-settings:"wdth" 80;line-height:1;margin:.7rem 0 1.4rem;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.price-big sub,.ticker sub{font-size:.55em;vertical-align:-.2em}
+.price-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem 1.5rem;margin:0;padding:1.1rem 0 0;border-top:1px solid rgba(243,246,255,.22)}
+.price-stats dt{font-size:.9rem;color:var(--on-blue-muted)}
+.price-stats dd{margin:.1rem 0 0;font-weight:700;font-size:1.15rem;font-variant-numeric:tabular-nums}
+.price-foot{margin:auto 0 0;padding-top:1.25rem;font-size:.92rem;color:var(--on-blue-muted);display:flex;justify-content:space-between;align-items:baseline;gap:.5rem 1rem;flex-wrap:wrap}
+.price-foot a{color:var(--on-blue);font-weight:700}
+.price-foot a[hidden]{display:none}
+.ticker{display:inline-flex;align-items:baseline;gap:.45rem;text-decoration:none;font-weight:700;font-size:.95rem;font-variant-numeric:tabular-nums;color:var(--on-blue)}
+.ticker[hidden]{display:none}
+.ticker .up{color:#7EE2B8}
+.ticker .down{color:#FFA3A0}
+@media (max-width:480px){.ticker{display:none}}
+/* roadmap */
+.encwrap{margin:0 0 2.5rem;max-width:720px}
+.encline{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-weight:600;margin-bottom:.6rem}
+.encline #eta{color:var(--muted);font-weight:400}
+.encbar{height:14px;background:var(--line);border-radius:3px;overflow:hidden}
+.encbar span{display:block;height:100%;width:0;background:var(--blue)}
+.phases{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:3px solid var(--ink)}
+.phases li{padding:1.4rem 1.4rem 0 0}
+.phases li + li{padding-left:1.4rem;border-left:1px solid var(--line)}
+.phases .n{font-size:.95rem;color:var(--muted);font-weight:600}
+.phases h3{font-size:1.5rem;font-variation-settings:"wdth" 85;margin:.2rem 0 .5rem;line-height:1.15}
+.pill{display:inline-block;font-size:.85rem;font-weight:700;padding:.2rem .6rem;border-radius:4px;background:var(--line);color:var(--ink)}
+.pill.done{background:var(--teal);color:#fff}
+.pill.now{background:var(--peach);color:var(--peach-ink)}
+.phases p{margin:.75rem 0 0;color:var(--muted)}
+@media (max-width:880px){
+  .phases{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .phases li:nth-child(3){padding-left:0;border-left:0}
+  .phases li:nth-child(n+3){margin-top:1.5rem;border-top:1px solid var(--line)}
+}
+@media (max-width:540px){
+  .phases{grid-template-columns:1fr}
+  .phases li,.phases li + li{padding-left:0;border-left:0}
+  .phases li + li{margin-top:1.5rem;border-top:1px solid var(--line)}
+}
+
+/* buy */
+.buy-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(1.25rem,3vw,2rem);align-items:stretch;margin-top:1.75rem}
+@media (max-width:880px){.buy-grid{grid-template-columns:1fr}}
+.steps{list-style:none;margin:0;padding:0;counter-reset:step}
+.steps li{counter-increment:step;display:grid;grid-template-columns:3rem 1fr;gap:0 1rem;padding:1.1rem 0;border-bottom:1px solid var(--line)}
+.steps li:first-child{padding-top:0}
+.steps li::before{content:counter(step);grid-row:span 2;font-size:2.4rem;font-weight:800;line-height:1;color:var(--blue)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .steps li::before{color:var(--peach)}}
+:root[data-theme="dark"] .steps li::before{color:var(--peach)}
+.steps strong{font-size:1.2rem}
+.steps span{color:var(--muted)}
+.contract{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:1.5rem}
+.contract h3{margin:0 0 .75rem;font-size:1.2rem}
+.addr{display:block;font-family:var(--mono);font-size:.9rem;background:var(--paper);border:1px dashed var(--line);border-radius:4px;padding:.9rem;word-break:break-all;margin-bottom:1rem}
+.contract p{color:var(--muted);font-size:.98rem;margin:1rem 0 0}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{background:var(--blue-deep)}
+
+/* faq */
+.faq{max-width:780px}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{cursor:pointer;list-style:none;padding:1.15rem 2.5rem 1.15rem 0;font-weight:700;font-size:1.2rem;position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:.25rem;top:.95rem;font-size:1.6rem;font-weight:400;color:var(--muted)}
+.faq details[open] summary::after{content:"\2212"}
+.faq details p{margin:0 0 1.25rem;color:var(--muted);max-width:62ch}
+
+/* footer */
+.footer{background:var(--blue-deep);color:var(--on-blue);padding:3rem 0}
+.footer .brand{margin-bottom:1rem}
+.footer p{color:var(--on-blue-muted);max-width:70ch;font-size:.95rem;margin:.5rem 0 0}
+.footer .fine{font-size:.85rem;opacity:.8}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="buttlock" viewBox="0 0 120 124">
+    <path d="M34 60V40a26 26 0 0 1 52 0v20" fill="none" stroke="currentColor" stroke-width="11" stroke-linecap="round"/>
+    <path d="M60 56C40 49 14 58 14 84c0 24 20 36 36 32 5-1 8-4 10-8 2 4 5 7 10 8 16 4 36-8 36-32 0-26-26-35-46-28z" style="fill:var(--peach)"/>
+    <ellipse cx="36" cy="74" rx="9" ry="5" transform="rotate(-32 36 74)" fill="#fff" opacity=".35"/>
+    <ellipse cx="84" cy="74" rx="9" ry="5" transform="rotate(32 84 74)" fill="#fff" opacity=".35"/>
+    <circle cx="60" cy="76" r="7" style="fill:var(--peach-ink)"/>
+    <path d="M56 80l-3 13h14l-3-13z" style="fill:var(--peach-ink)"/>
+    <path d="M60 99c-.6 3-.6 6 0 9" fill="none" style="stroke:var(--peach-ink)" stroke-width="3" stroke-linecap="round" opacity=".45"/>
+  </symbol>
+</svg>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="ButtLocker home">
+      <svg aria-hidden="true"><use href="#buttlock"/></svg>
+      ButtLocker <small>$BUTT</small>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#policy">Policy</a>
+      <a href="#tokenomics">Tokenomics</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="ticker" id="ticker" href="#buy" hidden aria-label="Live $BUTT price"><span id="tPrice"></span><span id="tChg"></span></a>
+    <a class="btn btn-peach btn-small" href="#buy">Buy $BUTT</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="hero-kicker">ButtLocker recovery</p>
+        <h1 id="hero-title">Enter the recovery key to unlock this butt</h1>
+        <p class="lede">Your cheeks were encrypted to keep them safe. Unfortunately, they are now extremely safe.</p>
+        <p class="pair">Launched on Stonks Exchange and paired with tokenized MSFT on Base. Holder rewards are paid in MSFT, no restart required.</p>
+
+        <fieldset class="keyfield">
+          <legend>48-digit recovery key</legend>
+          <div class="keygrid">
+            <input inputmode="numeric" maxlength="6" placeholder="000000" aria-label="Key block 1" autocomplete="off">
+            <input inputmode="numeric" maxlength="6" placeholder="000000" aria-label="Key block 2" autocomplete="off">
+            <input inputmode="numeric" maxlength="6" placeholder="000000" aria-label="Key block 3" autocomplete="off">
+            <input inputmode="numeric" maxlength="6" placeholder="000000" aria-label="Key block 4" autocomplete="off">
+            <input inputmode="numeric" maxlength="6" placeholder="000000" aria-label="Key block 5" autocomplete="off">
+            <input inputmode="numeric" maxlength="6" placeholder="000000" aria-label="Key block 6" autocomplete="off">
+            <input inputmode="numeric" maxlength="6" placeholder="000000" aria-label="Key block 7" autocomplete="off">
+            <input inputmode="numeric" maxlength="6" placeholder="000000" aria-label="Key block 8" autocomplete="off">
+          </div>
+          <div class="actions">
+            <button class="btn btn-peach" id="unlock" type="button">Unlock</button>
+            <button class="btn btn-line" id="randomKey" type="button">Try a random key</button>
+          </div>
+          <p class="result" id="result" aria-live="polite"></p>
+        </fieldset>
+
+        <p class="esc">Press Esc for more recovery options. There are no more recovery options.</p>
+      </div>
+
+      <div>
+        <div class="lockwrap" id="lock">
+          <svg viewBox="0 0 120 124" role="img" aria-label="A peach-shaped padlock"><use href="#buttlock"/></svg>
+        </div>
+        <div class="keyhelp">
+          <h2>Can't find your key?</h2>
+          <ul>
+            <li>On the sticky note that used to be on your monitor</li>
+            <li>In an email you archived in a panic</li>
+            <li>With your IT guy, who left the company in 2021</li>
+          </ul>
+          <p class="keyid">Recovery key ID: <code>B077-L0CK-3R00-6942</code></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="policy" aria-labelledby="policy-title">
+    <div class="wrap">
+      <h2 id="policy-title">Group policy for your posterior</h2>
+      <p class="intro">$BUTT is a meme token that treats every wallet like a locked drive. Here is the configuration, as set by a sysadmin who has seen things.</p>
+      <div class="scroller" tabindex="0" role="region" aria-label="Policy settings">
+        <table class="policy">
+          <thead><tr><th scope="col">Policy</th><th scope="col">State</th><th scope="col">What it means</th></tr></thead>
+          <tbody>
+            <tr><td>Require additional authentication at startup</td><td><span class="state on">Enabled</span></td><td>You'll be asked to prove you're you. Then asked again, slightly louder.</td></tr>
+            <tr><td>Encryption method</td><td><span class="state lock code">AES-256-CHEEK</span></td><td>Two cheeks, 256 bits, zero gaps.</td></tr>
+            <tr><td>Quote asset</td><td><span class="state req">Tokenized MSFT</span></td><td>$BUTT is priced in tokenized Microsoft shares on Base, not ETH. Minimum system requirements: one butt.</td></tr>
+            <tr><td>Holder rewards</td><td><span class="state on">Enabled</span></td><td>Trading fees get sent back to holders as tokenized MSFT.</td></tr>
+            <tr><td>Withdraw liquidity</td><td><span class="state lock">Locked forever</span></td><td>The pool position sits in a locker contract with no withdraw function. Nobody has that key, including us.</td></tr>
+            <tr><td>Mint new tokens</td><td><span class="state">Disabled</span></td><td>Fixed supply. No mint, no pause, no blacklist, no owner.</td></tr>
+            <tr><td>Store recovery key in the cloud</td><td><span class="state">Disabled</span></td><td>Your key lives in your back pocket, where it belongs.</td></tr>
+            <tr><td>Allow sitting while locked</td><td><span class="state">Not configured</span></td><td>Sit at your own risk.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="tokenomics" aria-labelledby="tok-title">
+    <div class="wrap">
+      <h2 id="tok-title">Tokenomics, as seen in disk management</h2>
+      <p class="intro">1,000,000,000 $BUTT, every single one of them in one Uniswap V3 pool against tokenized MSFT. No team wallet, no marketing wallet, no presale. We checked every partition.</p>
+
+      <h3 class="disk-head">Disk 0: supply</h3>
+      <div class="disk" role="img" aria-label="Supply allocation: 100% in the liquidity pool, locked forever">
+        <div class="disk-label"><strong>Disk 0</strong>Basic<br>1B $BUTT<br>Online</div>
+        <div class="parts">
+          <div class="part enc" style="--w:100%;--c:var(--blue)"><div class="band"></div><div class="body"><b>C: Liquidity pool</b><span>100%, 1,000,000,000 $BUTT</span><em>$BUTT / tokenized MSFT on Uniswap V3 (Base). Encrypted, locked forever, healthy.</em></div></div>
+        </div>
+      </div>
+      <ul class="legend">
+        <li style="--c:var(--blue)"><i></i><strong>C: Liquidity pool, 100%</strong><span class="amt">1,000,000,000 $BUTT</span><span class="note">The pool opened holding only $BUTT. Buyers bring the MSFT side, and the price climbs as they buy.</span></li>
+        <li style="--c:var(--line)"><i></i><strong>Unallocated, 0%</strong><span class="amt">0 $BUTT</span><span class="note">Where a team allocation would go. It is empty, like our recovery key drawer.</span></li>
+      </ul>
+
+      <h3 class="disk-head">Disk 1: every trade</h3>
+      <p class="intro">Each buy or sell pays a 1% swap fee, split two ways.</p>
+      <div class="disk" role="img" aria-label="Swap fee split: 0.7% to holder rewards, 0.3% to Stonks Exchange">
+        <div class="disk-label"><strong>Disk 1</strong>Dynamic<br>1% fee<br>Online</div>
+        <div class="parts">
+          <div class="part" style="--w:70%;--c:var(--peach)"><div class="band"></div><div class="body"><b>D: Holder rewards</b><span>0.7%</span><em>Paid out in tokenized MSFT</em></div></div>
+          <div class="part" style="--w:30%;--c:var(--slate)"><div class="band"></div><div class="body"><b>E: Platform</b><span>0.3%</span><em>Stonks Exchange</em></div></div>
+        </div>
+      </div>
+      <ul class="legend">
+        <li style="--c:var(--peach)"><i></i><strong>D: Holder rewards, 0.7%</strong><span class="amt">of every trade</span><span class="note">The creator's share of the fee, routed to $BUTT holders as tokenized MSFT. More volume, more rewards. No volume, no rewards.</span></li>
+        <li style="--c:var(--slate)"><i></i><strong>E: Platform, 0.3%</strong><span class="amt">of every trade</span><span class="note">Goes to Stonks Exchange, which mostly spends it buying and burning $STONKEX.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="roadmap" aria-labelledby="road-title">
+    <div class="wrap">
+      <h2 id="road-title">Roadmap</h2>
+      <p class="intro">Encrypting used space only. Please don't turn off your wallet.</p>
+
+      <div class="encwrap">
+        <div class="encline"><span>Encrypting roadmap: <span id="pct">0</span>%</span><span id="eta">Time remaining: calculating</span></div>
+        <div class="encbar" role="progressbar" aria-label="Roadmap progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="99"><span></span></div>
+      </div>
+
+      <ol class="phases">
+        <li><span class="n">Phase 1</span><h3>Encrypt</h3><span class="pill done">Done</span><p>Launched $BUTT on Stonks Exchange against tokenized MSFT. The liquidity locked itself.</p></li>
+        <li><span class="n">Phase 2</span><h3>Forget the key</h3><span class="pill now">In progress</span><p>Holder rewards landing in MSFT. Memes, community, one very large sticker order.</p></li>
+        <li><span class="n">Phase 3</span><h3>Panic</h3><span class="pill">Queued</span><p>Trackers, listings, and checking the MSFT chart and the $BUTT chart at 3am.</p></li>
+        <li><span class="n">Phase 4</span><h3>Recovery</h3><span class="pill">Queued</span><p>Unlock the moon. Or at least get a nice view of it.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" id="buy" aria-labelledby="buy-title">
+    <div class="wrap">
+      <h2 id="buy-title">Buy $BUTT</h2>
+      <div class="buy-grid">
+        <div class="price" id="price">
+          <div class="price-head"><h3>Live price</h3><span class="chg" id="pChg" hidden></span></div>
+          <p class="price-big" id="pValue">&ndash;</p>
+          <dl class="price-stats">
+            <div><dt>Market cap</dt><dd id="pMcap">&ndash;</dd></div>
+            <div><dt>Liquidity</dt><dd id="pLiq">&ndash;</dd></div>
+            <div><dt>24h volume</dt><dd id="pVol">&ndash;</dd></div>
+            <div><dt>Pair</dt><dd id="pPair">$BUTT / MSFT</dd></div>
+          </dl>
+          <p class="price-foot"><span id="pStatus" aria-live="polite">Loading price</span><a id="pChart" href="https://dexscreener.com/base" target="_blank" rel="noopener" hidden>Open chart</a></p>
+        </div>
+        <div class="contract">
+          <h3>Contract address (Base)</h3>
+          <code class="addr" id="addr">Find $BUTT on Stonks Exchange</code>
+          <div class="links">
+            <button class="btn btn-blue btn-small" id="copy" type="button" disabled>Copy address</button>
+            <a class="btn btn-outline btn-small" id="stonksLink" href="https://www.thestonks.exchange/" target="_blank" rel="noopener">Open Stonks Exchange</a>
+            <a class="btn btn-outline btn-small" id="scanLink" href="https://basescan.org/" target="_blank" rel="noopener" aria-disabled="true" tabindex="-1">View on Basescan</a>
+          </div>
+          <p>Only trust the address posted here. Anyone sliding into your DMs with a different one is not us.</p>
+        </div>
+      </div>
+      </div>
+  </section>
+
+  <section class="section" id="faq" aria-labelledby="faq-title">
+    <div class="wrap">
+      <h2 id="faq-title">Questions, answered</h2>
+      <div class="faq">
+        <details><summary>Does ButtLocker have a backdoor?</summary><p>Absolutely not. The backdoor was the first thing we encrypted. Security researchers keep asking to inspect it, and the answer is still no.</p></details>
+        <details><summary>What is rear-end encryption?</summary><p>It's like end-to-end encryption, except we only protect the one end that really matters.</p></details>
+        <details><summary>Does it work alongside Windows Defender?</summary><p>Perfectly. Defender guards the front, ButtLocker guards the rear. Together you get full coverage.</p></details>
+        <details><summary>Is Secure Booty on by default?</summary><p>Yes. Unsigned cheeks won't load at startup, and anything suspicious is quarantined before it can sit down.</p></details>
+        <details><summary>Can I unlock it with Windows Hello?</summary><p>Windows Hello only recognizes faces. Please stop pointing the webcam where it doesn't belong.</p></details>
+        <details><summary>Can IT access my butt remotely?</summary><p>Remote Desktop requests to your posterior are denied by policy. IT can open a ticket like everyone else.</p></details>
+        <details><summary>Does the firewall block everything?</summary><p>All inbound traffic is blocked. Outbound traffic is still allowed, which explains what happened on that Teams call.</p></details>
+        <details><summary>Why did my butt restart without warning?</summary><p>It's Patch Tuesday. Updates always install at the worst possible moment. Save your work and clench.</p></details>
+        <details><summary>What happens if I press Ctrl+Alt+Delete?</summary><p>Task Manager opens and lists butt.exe as not responding. Ending the task is not recommended.</p></details>
+        <details><summary>Why is my butt locked?</summary><p>For your protection.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <a class="brand" href="#top"><svg aria-hidden="true"><use href="#buttlock"/></svg> ButtLocker <small>$BUTT</small></a>
+    <p>$BUTT is a memecoin on Base, priced against tokenized MSFT on Stonks Exchange.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* Paste the contract address here */
+  var CONTRACT = "";
+
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var inputs = Array.prototype.slice.call(document.querySelectorAll('.keygrid input'));
+  var result = document.getElementById('result');
+  var lock = document.getElementById('lock');
+
+  inputs.forEach(function(inp, i){
+    inp.addEventListener('input', function(){
+      inp.value = inp.value.replace(/\D/g,'').slice(0,6);
+      if(inp.value.length === 6 && i < inputs.length-1) inputs[i+1].focus();
+    });
+    inp.addEventListener('keydown', function(e){
+      if(e.key === 'Backspace' && !inp.value && i > 0){ inputs[i-1].focus(); }
+      if(e.key === 'Enter'){ unlock(); }
+    });
+    inp.addEventListener('paste', function(e){
+      var t = ((e.clipboardData || window.clipboardData).getData('text') || '').replace(/\D/g,'');
+      if(t.length > 6){
+        e.preventDefault();
+        for(var k=0; i+k < inputs.length; k++){
+          var chunk = t.slice(k*6, k*6+6);
+          if(!chunk) break;
+          inputs[i+k].value = chunk;
+        }
+        inputs[Math.min(inputs.length-1, i+Math.ceil(t.length/6)-1)].focus();
+      }
+    });
+  });
+
+  var wrong = [
+    "Incorrect key. The butt has been notified.",
+    "Nope. Check the pocket of your other pants.",
+    "Wrong key. Tightening encryption.",
+    "Access denied. Clench level raised to maximum.",
+    "That key belongs to a different butt."
+  ];
+  var tries = 0;
+
+  function shake(){
+    lock.classList.remove('shake');
+    void lock.offsetWidth;
+    lock.classList.add('shake');
+  }
+
+  function unlock(){
+    var vals = inputs.map(function(x){ return x.value; });
+    var digits = vals.join('').length;
+    var msg;
+    if(digits === 0){
+      msg = "Type a key first. Any key. The butt is picky, we aren't.";
+    } else if(digits < 48){
+      msg = "That's " + digits + " of 48 digits. Your butt remains locked.";
+    } else if(vals.every(function(v){ var n = parseInt(v,10); return n % 11 === 0 && n < 720896; })){
+      msg = "Key format checks out. The butt still says no. Nobody knows why.";
+    } else {
+      msg = wrong[tries % wrong.length]; tries++;
+    }
+    result.textContent = msg;
+    shake();
+  }
+
+  document.getElementById('unlock').addEventListener('click', unlock);
+  document.getElementById('randomKey').addEventListener('click', function(){
+    inputs.forEach(function(inp){
+      inp.value = String(11 * Math.floor(Math.random()*65536)).padStart(6,'0');
+    });
+    result.textContent = "Random key loaded. Press Unlock and hope.";
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ result.textContent = "We did warn you. There are no more recovery options."; }
+  });
+
+  /* Roadmap progress: climbs to 99% and stays there */
+  var bar = document.querySelector('.encbar span');
+  var pct = document.getElementById('pct');
+  var eta = document.getElementById('eta');
+  var ran = false;
+  function run(){
+    if(ran) return; ran = true;
+    if(reduce){ bar.style.width='99%'; pct.textContent='99'; eta.textContent='Time remaining: about 4 years'; return; }
+    var dur = 3200, t0 = null;
+    function step(t){
+      if(t0 === null) t0 = t;
+      var p = Math.min(1, (t - t0)/dur);
+      var v = Math.floor((1 - Math.pow(1-p, 3)) * 99);
+      bar.style.width = v + '%';
+      pct.textContent = v;
+      if(p < 1) requestAnimationFrame(step);
+      else eta.textContent = 'Time remaining: about 4 years';
+    }
+    requestAnimationFrame(step);
+  }
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      if(entries.some(function(en){ return en.isIntersecting; })){ io.disconnect(); run(); }
+    }, {threshold:.4});
+    io.observe(document.querySelector('.encwrap'));
+  } else { run(); }
+
+
+  /* Live price from DexScreener (Base) */
+  var $ = function(id){ return document.getElementById(id); };
+  var pValue=$('pValue'), pChg=$('pChg'), pMcap=$('pMcap'), pLiq=$('pLiq'), pVol=$('pVol'), pPair=$('pPair'), pStatus=$('pStatus'), pChart=$('pChart');
+  var ticker=$('ticker'), tPrice=$('tPrice'), tChg=$('tChg');
+  var lastOk = 0, hasData = false;
+
+  function tiny(n){
+    var exp = Math.floor(Math.log10(n));
+    var mant = (n / Math.pow(10, exp)).toPrecision(4);
+    if(Number(mant) >= 10){ exp += 1; mant = (n / Math.pow(10, exp)).toPrecision(4); }
+    var digits = mant.replace('.', '').replace(/0+$/, '') || '0';
+    var zeros = -exp - 1;
+    return zeros >= 4 ? '0.0<sub>' + zeros + '</sub>' + digits : '0.' + '0'.repeat(zeros) + digits;
+  }
+  function num(n){
+    if(!isFinite(n) || n <= 0) return null;
+    if(n >= 1) return n.toLocaleString('en-US', {maximumFractionDigits: n >= 1000 ? 0 : 4});
+    if(n >= 0.01) return n.toFixed(4);
+    return tiny(n);
+  }
+  function money(n){
+    n = Number(n);
+    if(!isFinite(n) || n <= 0) return '&ndash;';
+    return '$' + new Intl.NumberFormat('en-US', {notation:'compact', maximumFractionDigits:2}).format(n);
+  }
+  function setStatus(t){ pStatus.textContent = t; }
+
+  function render(p){
+    var usd = Number(p.priceUsd), nat = Number(p.priceNative);
+    var quote = (p.quoteToken && p.quoteToken.symbol) || '';
+    var html = num(usd) ? '$' + num(usd) : (num(nat) ? num(nat) + ' ' + quote : '&ndash;');
+    pValue.innerHTML = html;
+    tPrice.innerHTML = html;
+
+    var ch = p.priceChange && Number(p.priceChange.h24);
+    if(isFinite(ch)){
+      var txt = (ch > 0 ? '+' : '') + ch.toFixed(2) + '%';
+      pChg.textContent = txt + ' 24h';
+      pChg.className = 'chg' + (ch < 0 ? ' down' : '');
+      pChg.hidden = false;
+      tChg.textContent = txt;
+      tChg.className = ch < 0 ? 'down' : 'up';
+    } else { pChg.hidden = true; tChg.textContent = ''; }
+
+    pMcap.innerHTML = money(p.marketCap || p.fdv);
+    pLiq.innerHTML = money(p.liquidity && p.liquidity.usd);
+    pVol.innerHTML = money(p.volume && p.volume.h24);
+    if(p.baseToken && quote) pPair.textContent = '$' + p.baseToken.symbol + ' / ' + quote;
+    if(p.url){ pChart.href = p.url; pChart.hidden = false; }
+    ticker.hidden = false;
+    hasData = true;
+  }
+
+  function ago(){
+    if(!lastOk) return;
+    var sec = Math.round((Date.now() - lastOk) / 1000);
+    setStatus(sec < 5 ? 'Updated just now' : 'Updated ' + sec + 's ago');
+  }
+
+  function loadPrice(){
+    if(!CONTRACT){ setStatus('Price appears once the contract address is added'); return; }
+    if(document.hidden) return;
+    fetch('https://api.dexscreener.com/token-pairs/v1/base/' + CONTRACT)
+      .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function(pairs){
+        if(!Array.isArray(pairs) || !pairs.length){
+          if(!hasData) setStatus('Waiting for the first trades to be indexed');
+          return;
+        }
+        var ca = CONTRACT.toLowerCase();
+        var mine = pairs.filter(function(p){ return p.baseToken && String(p.baseToken.address).toLowerCase() === ca; });
+        var list = mine.length ? mine : pairs;
+        list.sort(function(a,b){ return ((b.liquidity && b.liquidity.usd) || 0) - ((a.liquidity && a.liquidity.usd) || 0); });
+        render(list[0]);
+        lastOk = Date.now(); ago();
+      })
+      .catch(function(){
+        setStatus(hasData ? 'Connection lost, showing last price' : 'Price feed unavailable right now');
+      });
+  }
+  loadPrice();
+  setInterval(loadPrice, 30000);
+  setInterval(ago, 5000);
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden && Date.now() - lastOk > 30000) loadPrice(); });
+
+  /* Contract address */
+  var addr = document.getElementById('addr');
+  var copyBtn = document.getElementById('copy');
+  if(CONTRACT){
+    addr.textContent = CONTRACT; copyBtn.disabled = false;
+    var scan = document.getElementById('scanLink');
+    scan.href = 'https://basescan.org/token/' + CONTRACT;
+    scan.removeAttribute('aria-disabled'); scan.removeAttribute('tabindex');
+  }
+  copyBtn.addEventListener('click', function(){
+    function reset(){ setTimeout(function(){ copyBtn.textContent = 'Copy address'; }, 2000); }
+    function fallback(){
+      try{
+        var r = document.createRange(); r.selectNodeContents(addr);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        copyBtn.textContent = 'Selected, press Ctrl+C';
+      }catch(err){}
+      reset();
+    }
+    try{
+      navigator.clipboard.writeText(CONTRACT).then(function(){ copyBtn.textContent = 'Copied'; reset(); }, fallback);
+    }catch(err){ fallback(); }
+  });
+})();
+</script>
+</body>
+</html>
